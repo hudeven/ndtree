@@ -784,7 +784,7 @@ int main(int argc, char *argv[])
     opt.datafile = "data/data_random";
     // Name of the index file
     opt.idxfile = "data/index_random";
-    opt.bqfile = "data/query_random";
+    opt.bqfile = "data/box_query_random";
     opt.rqfile = UNDEF_STR;
     opt.range = 0.;
     opt.skip = 0;
