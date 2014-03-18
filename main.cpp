@@ -788,7 +788,7 @@ int main(int argc, char *argv[])
     opt.rqfile = UNDEF_STR;
     opt.range = 0.;
     opt.skip = 0;
-    opt.count = 1000;
+    opt.count = LONG_MAX;
     opt.newtree = true;
     opt.help = false;
     get_options(argc, argv, &opt);
