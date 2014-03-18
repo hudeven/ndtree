@@ -206,7 +206,7 @@ void batchBuild_with_duplicate(long  size)
     string line;
     getline(data_file, line);
     int distinctDataPoints = 0;
-    int n;
+    char n;
     for(long  i = 0; i < num_of_points && !data_file.eof(); i++)
     {
 #ifdef LOG_VECTOR_INDEX
