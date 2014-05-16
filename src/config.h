@@ -13,7 +13,7 @@ const int QUERY_RESULTS_BUFFER_SIZE = 1000;
 typedef int ND_tree_record;
 const int MAX_LINE_IN_SOURCE_FILE = 1000000;
 
-const int DIM = 16;
+int DIM = 16;
 const int CNTDIM = 0; 
 
 //rest 2 are used as part of sourceData file name: sourceData32+10
@@ -74,7 +74,6 @@ bool RESORT_2_OLD_SPLIT = true;//if true, might resort to old split when nodeSpl
 //#define ShorterThanSplitDim
 
 //#define LOG_KANPSACK_VALUE_AND_WEIGHT
-
 int heuristics_overlap_used_leaf =0;
 int heuristics_area_used_leaf =0;
 int heuristics_overlap_used_dir =0;

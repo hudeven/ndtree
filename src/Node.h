@@ -4,7 +4,7 @@
 #include "config.h"
 #include "utility.h"
 
-const int MAX_ALPHABET_SIZE = 255; // Define the maximum length of the ND-tree file name
+const int MAX_ALPHABET_SIZE = 256; // Define the maximum length of the ND-tree file name
 const int MAX_DMBR_DIM_SIZE = (MAX_ALPHABET_SIZE - 1) / BITS_PER_BYTE + 1; // in bytes, max bitmap size for one dimension of DMBR
 extern logClass logO;
 
@@ -17,8 +17,102 @@ extern logClass logO;
 
 class Node
 {
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#include <stack>
+
+// This file defines all the configuration parameters for the ND Tree program
+
+enum ENVIRONMENT {UNIX, WINDOWS};
+ENVIRONMENT RUNNING_ENVIRONMENT = UNIX;
+
+const int QUERY_RESULTS_BUFFER_SIZE = 1000;
+
+typedef int ND_tree_record;
+const int MAX_LINE_IN_SOURCE_FILE = 1000000;
+
+int DIM = 16;
+const int CNTDIM = 0; 
+
+//rest 2 are used as part of sourceData file name: sourceData32+10
+const int TOTAL_DSC_VALUE =8; //total DSC values to be read out
+const int TOTAL_CNT_VALUE =8;//total CNT values to be read out
+const int TOTAL_BOX_QUERY_NUM = 10;
+const int TOTAL_RANGE_QUERY_NUM =200;
+
+
+const int ALPHA=4;
+int A[] = {ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA
+, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA
+, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA
+, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA
+, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA
+, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA
+, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA
+, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA}; 
+const int BYTES_PER_DIM_IN_DMBR = ((ALPHA%8)==0)?(ALPHA/8):(ALPHA/8+1);
+
+const int BOX_SIZE_START_AT = 1;
+const int BOX_SIZE_STEP = 1;
+const int BOX_SIZE_STOP_BEFORE = A[0];
+const int RANGE_SIZE_STEP = 1;
+const int RANGE_STOP_BEFORE = (DIM + CNTDIM)<10?(DIM + CNTDIM):10;
+
+const int DISK_BLOCK_SIZE = 4096; 
+const int DMBR_SIZE = DIM * BYTES_PER_DIM_IN_DMBR; 
+
+int boxSize;
+
+const int usedBytesForEntryHeader = ((DIM%8)==0)?(DIM/8):(DIM/8+1);;
+//const int USE_LINK_FOR_BOX_QUERY=1;//don't change, set to 1 in all conditions
+//const int USE_LINK_FOR_RANGE_QUERY=1;//don't change, set to 1 in all conditions
+		
+const int MAX_DIM_AND_CONTDIM = 32; //jan 09, maximum lines for cnt and dsc in boxqueryall file
+
+enum SPLIT_TYPE { ORIGINAL, TO_DEATH/*do not use*/,TO_DEATH_MAX_UTIL/*do not use*/,TO_DEATH_RANDOM_UTIL };
+
+// This options decides whether we use NDTree or BoNDTree
+SPLIT_TYPE nodeSplitType  = ORIGINAL;//TO_DEATH_RANDOM_UTIL; 
+
+enum ENUM_TREE_TYPE {STATIC_TREE, DYNAMIC_TREE};ENUM_TREE_TYPE TREE_TYPE = STATIC_TREE;
+
+bool RESORT_2_OLD_SPLIT = true;//if true, might resort to old split when nodeSplitType is TO_DEATH_RANDOM_UTIL
+
+//#define LOG_MBR_SPLITTING_LEAF
+//#define LOG_MBR_SPLITTING_DIR
+
+//#define LOG_EDGE_LENGTH_LEAF
+//#define LOG_EDGE_LENGTH_DIR
+
+//#define LOG_OLD_AND_NEW_BLOCK_LEAF
+
+////#define LOG_UTILIZATION
+
+//#define LOG_ENTRY_ON_SPLITTING_DIM 
+//#define ShorterThanSplitDim
+
+//#define LOG_KANPSACK_VALUE_AND_WEIGHT
+
+int heuristics_overlap_used_leaf =0;
+int heuristics_area_used_leaf =0;
+int heuristics_overlap_used_dir =0;
+int heuristics_area_used_dir =0;
+int BestChild_covered_area =0;
+int BestChild_notcovered_overlap_enlarge =0;
+int BestChild_notcovered_area =0;
+int BestChild_notcovered_area_enlarge =0;
+
+const int enforce_minUtil_for_exhaustSplit =1;//always 1
+const int try_all_dim_with_minUtil = 1;
+
+
+
+#endif
 public:
     Node(int* alphabet_sizes);
+    ~Node();
+
     //virtual void read_node(fstream& ND_tree_file, unsigned int block_number) = 0;
     //virtual void write_node(fstream& ND_tree_file, unsigned int block_number) = 0;
     void log_DMBR(const unsigned char* const DMBR);
@@ -31,20 +125,57 @@ protected:
     void bitmap_to_letters(unsigned char* bitmap_set, int byte_size, unsigned char* letters, int &letter_count); // Given a bitmap, generate a corresponding letter list
     int set_size(unsigned char* bitmap_set, int byte_size);
 
+
+////Steven: change to dynamic allocation
+
     // Auxiliary data
-    int DMBR_byte_lut[DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding byte in DMBR
-    int DMBR_bit_lut[DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding bit in DMBR
-    int DMBR_start_byte_lut[DIM]; // Given a dim, store the coresponding start byte in DMBR
-    int DMBR_end_byte_lut[DIM]; // Given a dim, store the coresponding end byte in DMBR
-    int bitmap_byte_lut[MAX_ALPHABET_SIZE]; // Given a letter, store the coresponding byte in a bitmap
-    int bitmap_bit_lut[MAX_ALPHABET_SIZE]; // Given a letter, store the coresponding bit in a bitmap
+    int* DMBR_byte_lut[MAX_ALPHABET_SIZE]; //// [DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding byte in DMBR
+    int* DMBR_bit_lut[MAX_ALPHABET_SIZE]; //// [DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding bit in DMBR
+    int* DMBR_start_byte_lut;////[DIM]; // Given a dim, store the coresponding start byte in DMBR
+    int* DMBR_end_byte_lut; //// [DIM]; // Given a dim, store the coresponding end byte in DMBR
+   
+////Steven
+
+    int* bitmap_byte_lut; // Given a letter, store the coresponding byte in a bitmap
+    int* bitmap_bit_lut; // Given a letter, store the coresponding bit in a bitmap
  
 	//int getCompressedDiskSize(vector<Dir_entry_copy> & tmp_entries, int *alphabet_sizes);
 
 };
 
+Node::~Node()
+{
+
+    delete [] DMBR_start_byte_lut;
+    delete [] DMBR_end_byte_lut;
+    delete [] bitmap_byte_lut;
+    delete [] bitmap_bit_lut;
+
+   for(int i=0; i<DIM; i++)
+   {
+       delete [] DMBR_byte_lut[i];
+       delete [] DMBR_bit_lut[i];
+
+    }
+ 
+
+
+}
 Node::Node(int* alphabet_sizes)
 {
+    //// Steven:
+    
+    for(int i=0; i<DIM; i++)
+    {
+       DMBR_byte_lut[i] = new int[MAX_ALPHABET_SIZE];//// [DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding byte in DMBR
+       DMBR_bit_lut[i] = new int[MAX_ALPHABET_SIZE]; //// [DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding bit in DMBR
+    }
+
+    DMBR_start_byte_lut = new int[DIM];////[DIM]; // Given a dim, store the coresponding start byte in DMBR
+    DMBR_end_byte_lut = new int[DIM]; //// [DIM]; // Given a dim, store the coresponding end byte in DMBR
+    bitmap_byte_lut = new int[MAX_ALPHABET_SIZE];
+    bitmap_bit_lut = new int[MAX_ALPHABET_SIZE];
+
     // compute auxiliary table
     int tmp_byte = 0;
     int i, j;

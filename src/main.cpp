@@ -2,6 +2,10 @@
 #include <vector>
 #include "logClass.h"
 #include <limits.h>
+#include <exception>
+
+using namespace std;
+
 ofstream OutStream;
 
 // GLOBAL VARIABLES - Added by Alok to make interface of this
@@ -18,8 +22,8 @@ string globalIndexFilename = "ndTree.dat";
 const double dir_min_util = ((nodeSplitType==ORIGINAL)||(enforce_minUtil_for_exhaustSplit==1))?0.3:0.0000000000003;
 const double leaf_min_util = 0.3;
 
-int tmp_DMBR_byte_lut[DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding byte in DMBR
-int tmp_DMBR_bit_lut[DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding bit in DMBR
+int* tmp_DMBR_byte_lut[MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding byte in DMBR
+int* tmp_DMBR_bit_lut[MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding bit in DMBR
 
 int debug_boxQ_leaf_accessed=0;
 int debug_boxQ_leaf_hit=0;
@@ -185,44 +189,59 @@ logO.log2File("----------");logO.log2File(i);logO.log2File("\n");
 //this one only reads data file up to the give number of data points 
 void batchBuild_with_duplicate(long  size)
 {
+
     logO.clearLogs();
     duplicateDataPoints=0;
     ND_tree ndt;
-    Leaf_entry new_data/*, query_data, db_data*/;
+    //Leaf_entry* new_data;
     Error_code result;
+
     ndt.create_empty_tree(A, dir_min_util, leaf_min_util, globalIndexFilename);
     ndt.read_existing_tree(globalIndexFilename);
     long num_of_points=size;
-    ifstream data_file;
-    data_file.open(globalDataFilename.c_str());
-    if (data_file.fail())
+    //ifstream data_file;
+    //data_file.open(globalDataFilename.c_str());
+   FILE* data_file = fopen(globalDataFilename.c_str(),"r");
+    //data_file.open("tt");
+ /*  if (data_file.fail())
     {
         cout<<"cant open file "<<globalDataFilename<<endl;
         exit(1);
-
     }
-
+*/
     int number_of_io = 0;
-    string line;
-    getline(data_file, line);
+    //string line;
+    //getline(data_file, line);
+    char* line = NULL;
+    size_t len = 0;
+    getline(&line, &len, data_file);
     int distinctDataPoints = 0;
     char n;
-    for(long  i = 0; i < num_of_points && !data_file.eof(); i++)
+   
+    for(long  i = 0; i < num_of_points; i++)
     {
+
 #ifdef LOG_VECTOR_INDEX
         logO.log2File("----------");logO.log2File(i);logO.log2File("\n");
 #endif
 #ifdef LOG_SPLITTING_VECTOR_INDEX
-        vector_index = i;
+         vector_index = i;
 #endif
-        istringstream instr(line);
-        for(int j = 0; j < DIM; j++)
+	Leaf_entry new_data;
+	// istringstream instr(line);
+        //new_data.key = new unsigned char[DIM];
+
+	for(int j = 0; j < DIM; j++)
         {
-            instr >> n;
-            new_data.key[j] = n;
-        }
+	    //instr >> n;
+            //new_data.key[j] = n;
+            unsigned char tmp = line[j];
+	    new_data.key[j] = tmp;
+    	}
+	
         new_data.record = 1; 
-        result = ndt.insert_use_link(new_data, number_of_io);
+ 
+ 	result = ndt.insert_use_link(new_data, number_of_io);
         if(result == duplicate_error)
         {
             duplicateDataPoints++;
@@ -231,13 +250,18 @@ void batchBuild_with_duplicate(long  size)
         {
             distinctDataPoints++;
         }
-        getline(data_file, line);
+        // getline(data_file, line);
+	
+        getline(&line, &len, data_file);
     }
-    data_file.close();
+
+    //data_file.close();
+    fclose(data_file);
     cout<<"Duplicate data points encountered:"<<duplicateDataPoints<<endl;
     cout<<"DistinctDataPoints data points indexed:"<<distinctDataPoints<<endl;
     cout<<"Total data points read:"<<size <<endl;
     ndt.print_information( );
+
 }
 
 void batchRangeQuery(    )
@@ -672,6 +696,10 @@ void LinearScanBoxQuery(int dataNUM)
 #define OPT_HELP "-help"
 #define UNDEF_STR "__UNDEF__"
 #define UNDEF_LONG -999999
+
+//// k-mer length
+#define OPT_DIM "-dim"
+
 struct options
 {
     // Name of the data file.
@@ -685,6 +713,9 @@ struct options
     long count;
     bool newtree;
     bool help;
+
+    //// kmer length
+    int dim;
 };
 
 void get_options(int argc, char **argv, struct options *opt)
@@ -698,6 +729,10 @@ void get_options(int argc, char **argv, struct options *opt)
     string opt_skip(OPT_SKIP);
     string opt_count(OPT_COUNT);
     string opt_help(OPT_HELP);
+    
+    //// k-mer length
+    string opt_dim(OPT_DIM);
+
     for(long i=0;i<argc;i++)
     {
         if(!opt_idxfile.compare(argv[i]))
@@ -743,6 +778,11 @@ void get_options(int argc, char **argv, struct options *opt)
         {
             opt->help = true;
         }
+	if(!opt_dim.compare(argv[i]))
+	{
+	    stringstream s(argv[i+1]);
+	    s>>(opt->dim);
+	}
     }
 }
 
@@ -781,17 +821,32 @@ int main(int argc, char *argv[])
     options opt;
     //Initialize options to Undef values
     // Name of the data file.
-    opt.datafile = "data/data_random";
+    opt.datafile = "../data/data_random";
     // Name of the index file
-    opt.idxfile = "data/index_random";
-    opt.bqfile = "data/box_query_random";
+    opt.idxfile = "../data/index_random";
+    opt.bqfile = "../data/box_query_random";
     opt.rqfile = UNDEF_STR;
     opt.range = 0.;
     opt.skip = 0;
-    opt.count = LONG_MAX;
+    opt.count = 10000; //LONG_MAX;
     opt.newtree = true;
     opt.help = false;
+
+    opt.dim = 16;
+
     get_options(argc, argv, &opt);
+
+    if(opt.dim != 16)
+    {
+	DIM = opt.dim;
+    }
+    
+    for(int i=0; i<DIM; i++)
+    {
+        tmp_DMBR_byte_lut[i] = new int[MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding byte in DMBR
+        tmp_DMBR_bit_lut[i] = new int[MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding bit in DMBR
+    }
+
 
     if(opt.idxfile.compare(UNDEF_STR))
     {

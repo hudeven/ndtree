@@ -48,7 +48,7 @@ public:
 
 
    // public data members
-   static const int DIR_NODE_SIZE =  (DISK_BLOCK_SIZE - DIR_NODE_OVERHEAD) / (DMBR_SIZE + sizeof(unsigned int));
+   int DIR_NODE_SIZE;
 
 
 void log2file( );
@@ -260,6 +260,9 @@ private:
 
 
 Dir_node::Dir_node(int* alphabet_sizes):Node(alphabet_sizes){
+
+   DIR_NODE_SIZE =  (DISK_BLOCK_SIZE - DIR_NODE_OVERHEAD) / (DMBR_SIZE + sizeof(unsigned int));
+   
    count = 0;
    entriesVec.clear();
 }

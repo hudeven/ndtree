@@ -4,31 +4,37 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+A	Node.h	/^int A[] = {ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA$/;"	m	class:Node
 A	config.h	/^int A[] = {ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA$/;"	v
+ALPHA	Node.h	/^const int ALPHA=4;$/;"	m	class:Node
 ALPHA	config.h	/^const int ALPHA=4;$/;"	v
 BITS_PER_BYTE	utility.h	/^const int BITS_PER_BYTE = 8;$/;"	v
+BOX_SIZE_START_AT	Node.h	/^const int BOX_SIZE_START_AT = 1;$/;"	m	class:Node
 BOX_SIZE_START_AT	config.h	/^const int BOX_SIZE_START_AT = 1;$/;"	v
+BOX_SIZE_STEP	Node.h	/^const int BOX_SIZE_STEP = 1;$/;"	m	class:Node
 BOX_SIZE_STEP	config.h	/^const int BOX_SIZE_STEP = 1;$/;"	v
+BOX_SIZE_STOP_BEFORE	Node.h	/^const int BOX_SIZE_STOP_BEFORE = A[0];$/;"	m	class:Node
 BOX_SIZE_STOP_BEFORE	config.h	/^const int BOX_SIZE_STOP_BEFORE = A[0];$/;"	v
+BYTES_PER_DIM_IN_DMBR	Node.h	/^const int BYTES_PER_DIM_IN_DMBR = ((ALPHA%8)==0)?(ALPHA\/8):(ALPHA\/8+1);$/;"	m	class:Node
 BYTES_PER_DIM_IN_DMBR	config.h	/^const int BYTES_PER_DIM_IN_DMBR = ((ALPHA%8)==0)?(ALPHA\/8):(ALPHA\/8+1);$/;"	v
+CNTDIM	Node.h	/^const int CNTDIM = 0; $/;"	m	class:Node
 CNTDIM	config.h	/^const int CNTDIM = 0; $/;"	v
+CONFIG_H	Node.h	21;"	d
 CONFIG_H	config.h	2;"	d
-DIM	config.h	/^const int DIM = 16;$/;"	v
+DIM	Node.h	/^int DIM = 16;$/;"	m	class:Node
+DIM	config.h	/^int DIM = 16;$/;"	v
 DIR_ENTRY_H	Dir_entry.h	2;"	d
 DIR_NODE_H	Dir_node.h	2;"	d
 DIR_NODE_OVERHEAD	Dir_node.h	/^const int DIR_NODE_OVERHEAD = 4; \/\/ int count$/;"	v
-DIR_NODE_SIZE	Dir_node.h	/^   static const int DIR_NODE_SIZE =  (DISK_BLOCK_SIZE - DIR_NODE_OVERHEAD) \/ (DMBR_SIZE + sizeof(unsigned int));$/;"	m	class:Dir_node
-DIR_NODE_SIZE	ND_tree.h	/^   static const int DIR_NODE_SIZE =  (DISK_BLOCK_SIZE - DIR_NODE_OVERHEAD) \/ (DMBR_SIZE + sizeof(unsigned int));$/;"	m	class:ND_tree
-DMBR	Dir_entry.h	/^   unsigned char DMBR[DMBR_SIZE]; \/\/ Digital Minimum Bounding Rectangle$/;"	m	struct:Dir_entry
-DMBR_bit_lut	Node.h	/^    int DMBR_bit_lut[DIM][MAX_ALPHABET_SIZE]; \/\/ Given a dim and a letter, store the coresponding bit in DMBR$/;"	m	class:Node
-DMBR_byte_lut	Node.h	/^    int DMBR_byte_lut[DIM][MAX_ALPHABET_SIZE]; \/\/ Given a dim and a letter, store the coresponding byte in DMBR$/;"	m	class:Node
-DMBR_end_byte_lut	Node.h	/^    int DMBR_end_byte_lut[DIM]; \/\/ Given a dim, store the coresponding end byte in DMBR$/;"	m	class:Node
-DMBR_start_byte_lut	Node.h	/^    int DMBR_start_byte_lut[DIM]; \/\/ Given a dim, store the coresponding start byte in DMBR$/;"	m	class:Node
+DIR_NODE_SIZE	Dir_node.h	/^   int DIR_NODE_SIZE;$/;"	m	class:Dir_node
+DIR_NODE_SIZE	ND_tree.h	/^   int DIR_NODE_SIZE;$/;"	m	class:ND_tree
+DMBR	Dir_entry.h	/^   unsigned char* DMBR; \/\/ Digital Minimum Bounding Rectangle$/;"	m	struct:Dir_entry
 DOUBLE_INF	utility.h	/^const double DOUBLE_INF = numeric_limits<double> :: max( );$/;"	v
 DOUBLE_THRESHOLD	utility.h	/^const double DOUBLE_THRESHOLD = 1E-14;$/;"	v
 Dir_entry	Dir_entry.h	/^struct Dir_entry{$/;"	s
 Dir_node	Dir_node.h	/^Dir_node::Dir_node(int* alphabet_sizes):Node(alphabet_sizes){$/;"	f	class:Dir_node
 Dir_node	Dir_node.h	/^class Dir_node:public Node{$/;"	c
+ENVIRONMENT	Node.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	g	class:Node
 ENVIRONMENT	config.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	g
 Error_code	utility.h	/^enum Error_code { duplicate_error, not_present, success, overflow, underflow, range_err, fail };$/;"	g
 INT_INF	utility.h	/^const int INT_INF = numeric_limits<int> :: max( );$/;"	v
@@ -46,6 +52,7 @@ LocalDMBRInfoCalculation	main.cpp	/^void LocalDMBRInfoCalculation()$/;"	f
 MASKS	utility.h	/^const unsigned char MASKS[] = {1, 2, 4, 8, 16, 32, 64, 128};$/;"	v
 MAX_ALPHABET_SIZE	Node.h	/^const int MAX_ALPHABET_SIZE = 255; \/\/ Define the maximum length of the ND-tree file name$/;"	v
 MAX_DMBR_DIM_SIZE	Node.h	/^const int MAX_DMBR_DIM_SIZE = (MAX_ALPHABET_SIZE - 1) \/ BITS_PER_BYTE + 1; \/\/ in bytes, max bitmap size for one dimension of DMBR$/;"	v
+MAX_LINE_IN_SOURCE_FILE	Node.h	/^const int MAX_LINE_IN_SOURCE_FILE = 1000000;$/;"	m	class:Node
 MAX_LINE_IN_SOURCE_FILE	config.h	/^const int MAX_LINE_IN_SOURCE_FILE = 1000000;$/;"	v
 NDT_sort	utility.cpp	/^void NDT_sort(int count, double* weight_list, int* sorted_index_list, bool asc){$/;"	f
 NDT_sort	utility.cpp	/^void NDT_sort(int count, unsigned int* weight_list){$/;"	f
@@ -57,12 +64,13 @@ ND_file	ND_tree.h	/^   fstream ND_file;$/;"	m	class:ND_tree
 ND_file_name	ND_tree.h	/^   char ND_file_name[ND_FILE_NAME_LENGTH]; \/\/ The name of the ND-tree file$/;"	m	class:ND_tree
 ND_tree	ND_tree.h	/^ND_tree::ND_tree(){$/;"	f	class:ND_tree
 ND_tree	ND_tree.h	/^class ND_tree{$/;"	c
+ND_tree_record	Node.h	/^typedef int ND_tree_record;$/;"	t	class:Node
 ND_tree_record	config.h	/^typedef int ND_tree_record;$/;"	t
 NODE_H	Node.h	2;"	d
-Node	Node.h	/^Node::Node(int* alphabet_sizes)$/;"	f	class:Node
 Node	Node.h	/^class Node$/;"	c
 OPT_BQFILE	main.cpp	666;"	d	file:
 OPT_COUNT	main.cpp	670;"	d	file:
+OPT_DIM	main.cpp	677;"	d	file:
 OPT_DSCDIM	main.cpp	664;"	d	file:
 OPT_HELP	main.cpp	672;"	d	file:
 OPT_LOADFILE	main.cpp	665;"	d	file:
@@ -72,19 +80,28 @@ OPT_RQFILE	main.cpp	667;"	d	file:
 OPT_SKIP	main.cpp	669;"	d	file:
 OPT_TREEFILE	main.cpp	663;"	d	file:
 OutStream	main.cpp	/^ofstream OutStream;$/;"	v
+QUERY_RESULTS_BUFFER_SIZE	Node.h	/^const int QUERY_RESULTS_BUFFER_SIZE = 1000;$/;"	m	class:Node
 QUERY_RESULTS_BUFFER_SIZE	config.h	/^const int QUERY_RESULTS_BUFFER_SIZE = 1000;$/;"	v
+RANGE_SIZE_STEP	Node.h	/^const int RANGE_SIZE_STEP = 1;$/;"	m	class:Node
 RANGE_SIZE_STEP	config.h	/^const int RANGE_SIZE_STEP = 1;$/;"	v
+RUNNING_ENVIRONMENT	Node.h	/^ENVIRONMENT RUNNING_ENVIRONMENT = UNIX;$/;"	m	class:Node
 RUNNING_ENVIRONMENT	config.h	/^ENVIRONMENT RUNNING_ENVIRONMENT = UNIX;$/;"	v
-TOTAL_BOX_QUERY_NUM	config.h	/^const int TOTAL_BOX_QUERY_NUM = 10000;$/;"	v
+TOTAL_BOX_QUERY_NUM	Node.h	/^const int TOTAL_BOX_QUERY_NUM = 10;$/;"	m	class:Node
+TOTAL_BOX_QUERY_NUM	config.h	/^const int TOTAL_BOX_QUERY_NUM = 10;$/;"	v
+TOTAL_CNT_VALUE	Node.h	/^const int TOTAL_CNT_VALUE =8;\/\/total CNT values to be read out$/;"	m	class:Node
 TOTAL_CNT_VALUE	config.h	/^const int TOTAL_CNT_VALUE =8;\/\/total CNT values to be read out$/;"	v
+TOTAL_DSC_VALUE	Node.h	/^const int TOTAL_DSC_VALUE =8; \/\/total DSC values to be read out$/;"	m	class:Node
 TOTAL_DSC_VALUE	config.h	/^const int TOTAL_DSC_VALUE =8; \/\/total DSC values to be read out$/;"	v
+TOTAL_RANGE_QUERY_NUM	Node.h	/^const int TOTAL_RANGE_QUERY_NUM =200;$/;"	m	class:Node
 TOTAL_RANGE_QUERY_NUM	config.h	/^const int TOTAL_RANGE_QUERY_NUM =200;$/;"	v
 UNDEF_LONG	main.cpp	674;"	d	file:
 UNDEF_STR	main.cpp	673;"	d	file:
+UNIX	Node.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	e	enum:Node::ENVIRONMENT
 UNIX	config.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	e	enum:ENVIRONMENT
 UTILITY_H	utility.h	2;"	d
+WINDOWS	Node.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	e	enum:Node::ENVIRONMENT
 WINDOWS	config.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	e	enum:ENVIRONMENT
-alphabet_sizes	ND_tree.h	/^   int alphabet_sizes[DIM]; \/\/ Dynamic array of alphabet sizes$/;"	m	class:ND_tree
+alphabet_sizes	ND_tree.h	/^   int* alphabet_sizes; \/\/ Dynamic array of alphabet sizes$/;"	m	class:ND_tree
 aux_tree_node	Dir_node.h	/^	  aux_tree_node(){$/;"	f	struct:Dir_node::aux_tree_node
 aux_tree_node	Dir_node.h	/^	  aux_tree_node(const aux_tree_node& orig) {$/;"	f	struct:Dir_node::aux_tree_node
 aux_tree_node	Dir_node.h	/^   struct aux_tree_node{$/;"	s	class:Dir_node
@@ -97,17 +114,12 @@ batchRangeQuery	main.cpp	/^void batchRangeQuery(    )$/;"	f
 binary2string	utility.cpp	/^void binary2string(const unsigned char* const ptr, int lengthInBytes, string & resultString)$/;"	f
 bit_1_count_lut	utility.h	/^const int bit_1_count_lut[] = { \/\/ 256 entries$/;"	v
 bit_mask	utility.h	/^const unsigned char bit_mask[] = {1,2,4,8,16,32,64,128};\/\/set corresponding bit to 1, others to 0$/;"	v
-bitmap_bit_lut	Node.h	/^    int bitmap_bit_lut[MAX_ALPHABET_SIZE]; \/\/ Given a letter, store the coresponding bit in a bitmap$/;"	m	class:Node
-bitmap_byte_lut	Node.h	/^    int bitmap_byte_lut[MAX_ALPHABET_SIZE]; \/\/ Given a letter, store the coresponding byte in a bitmap$/;"	m	class:Node
-bitmap_to_letters	Node.h	/^void Node::bitmap_to_letters(unsigned char* bitmap_set, int byte_size, unsigned char* letters, int &letter_count)$/;"	f	class:Node
 box_query	ND_tree.h	/^void ND_tree::box_query($/;"	f	class:ND_tree
 bqfile	main.cpp	/^    string bqfile;\/\/ box query file$/;"	m	struct:options	file:
 cal_DMBR	Dir_node.h	/^void Dir_node::cal_DMBR(Dir_entry* dir_entries, int num_of_dir_entries, unsigned char* new_DMBR){$/;"	f	class:Dir_node
 cal_DMBR	Dir_node.h	/^void Dir_node::cal_DMBR(Dir_entry* dir_entries, int* indices_of_dir_entries_used, int num_of_dir_entries_used, unsigned char* new_DMBR){$/;"	f	class:Dir_node
 cal_DMBR	Dir_node.h	/^void Dir_node::cal_DMBR(vector<Dir_entry> &  dir_entries, int* indices_of_dir_entries_used, int num_of_dir_entries_used, unsigned char* new_DMBR){$/;"	f	class:Dir_node
 cal_DMBR	Dir_node.h	/^void Dir_node::cal_DMBR(vector<Dir_entry> & dir_entries, int num_of_dir_entries, unsigned char* new_DMBR){$/;"	f	class:Dir_node
-cal_normed_area	Node.h	/^double Node::cal_normed_area(unsigned char* DMBR, int* alphabet_sizes)$/;"	f	class:Node
-cal_normed_overlap	Node.h	/^double Node::cal_normed_overlap(unsigned char* DMBR1, unsigned char* DMBR2, int* alphabet_sizes)$/;"	f	class:Node
 child	Dir_entry.h	/^   unsigned int child; \/\/ Block number of the child of the current entry$/;"	m	struct:Dir_entry
 children	Dir_node.h	/^      int children[MAX_ALPHABET_SIZE];$/;"	m	struct:Dir_node::aux_tree_node
 choose_subtree	ND_tree.h	/^unsigned int ND_tree::choose_subtree(Leaf_entry &new_data, int &number_of_io, stack<unsigned int>& node_stack, stack<int>& index_stack){$/;"	f	class:ND_tree
@@ -127,6 +139,7 @@ debug_boxQ_leaf_hit_for_all	main.cpp	/^vector<int> debug_boxQ_leaf_hit_for_all;$
 debug_boxQ_leaf_hit_peak	main.cpp	/^int debug_boxQ_leaf_hit_peak=0;$/;"	v
 debug_height	main.cpp	/^int debug_height;$/;"	v
 decide_order_by_aux_tree	Dir_node.h	/^void Dir_node::decide_order_by_aux_tree(aux_tree_node* tree, int root, int letters_bitmap_byte_size, set_entry* set_entry_array, int set_entry_array_size, int* sorted_set_list, int& list_size){$/;"	f	class:Dir_node
+dim	main.cpp	/^    int dim;$/;"	m	struct:options	file:
 dir_min_util	ND_tree.h	/^   double dir_min_util;$/;"	m	class:ND_tree
 dir_min_util	main.cpp	/^const double dir_min_util = ((nodeSplitType==ORIGINAL)||(enforce_minUtil_for_exhaustSplit==1))?0.3:0.0000000000003;$/;"	v
 display_help	main.cpp	/^void display_help()$/;"	f
@@ -178,8 +191,8 @@ is_covered	Dir_node.h	/^bool Dir_node::is_covered(const Leaf_entry &query_data, 
 is_set	Dir_node.h	/^      bool is_set; \/\/ true: sets, false: roots$/;"	m	struct:Dir_node::mixed_list_entry
 is_within_Hamming_dist	Dir_node.h	/^bool Dir_node::is_within_Hamming_dist(const Leaf_entry &query_data, unsigned char* DMBR, int range){$/;"	f	class:Dir_node
 is_within_box	Dir_node.h	/^bool Dir_node::is_within_box($/;"	f	class:Dir_node
-is_within_box	Leaf_node.h	/^bool Leaf_node::is_within_box(const unsigned char box_query_data_DMBR[DMBR_SIZE], unsigned char* DMBR)$/;"	f	class:Leaf_node
-key	Leaf_entry.h	/^    unsigned char key[DIM]; \/\/ Key: a string of DIM characters, represented as 0 to (alphabet_size-1)$/;"	m	struct:Leaf_entry
+is_within_box	Leaf_node.h	/^bool Leaf_node::is_within_box(const unsigned char* box_query_data_DMBR, unsigned char* DMBR)$/;"	f	class:Leaf_node
+key	Leaf_entry.h	/^    unsigned char* key; \/\/\/\/ [DIM]; \/\/ Key: a string of DIM characters, represented as 0 to (alphabet_size-1)$/;"	m	struct:Leaf_entry
 leaf_min_util	ND_tree.h	/^   double leaf_min_util;$/;"	m	class:ND_tree
 leaf_min_util	main.cpp	/^const double leaf_min_util = 0.3;$/;"	v
 letter_entry	Leaf_node.h	/^    struct letter_entry{$/;"	s	class:Leaf_node
@@ -198,8 +211,6 @@ logDMBR	Leaf_node.h	/^void Leaf_node::logDMBR()$/;"	f	class:Leaf_node
 logFlag	logClass.h	/^	bool logFlag;$/;"	m	class:logClass
 logO	main.cpp	/^logClass logO;$/;"	v
 logSingleChildDMBR	Dir_node.h	/^void Dir_node::logSingleChildDMBR(const unsigned char* const DMBR)$/;"	f	class:Dir_node
-log_DMBR	Node.h	/^void Node::log_DMBR(const unsigned char* const DMBR)$/;"	f	class:Node
-log_OneDirEntry_OnOneDscDim	Node.h	/^void Node::log_OneDirEntry_OnOneDscDim(  unsigned char*  DMBR, int dimNum,int* alphabet_sizes )$/;"	f	class:Node
 log_OneEntry_OnOneDscDim	Dir_node.h	/^void Dir_node::log_OneEntry_OnOneDscDim( Dir_entry*  oneEntry,int entryIndex, int dimNum,int* alphabet_sizes )$/;"	f	class:Dir_node
 log_OneEntry_OnOneDscDim	Leaf_node.h	/^void Leaf_node::log_OneEntry_OnOneDscDim(const Leaf_entry* const oneEntry,int entryIndex, int dimNum)$/;"	f	class:Leaf_node
 lpad	utility.cpp	/^string lpad(string s, unsigned int str_len, string pad_s){$/;"	f
@@ -245,14 +256,11 @@ set_count	Dir_node.h	/^      int set_count;$/;"	m	struct:Dir_node::aux_tree_node
 set_entry	Dir_node.h	/^	  set_entry(){$/;"	f	struct:Dir_node::set_entry
 set_entry	Dir_node.h	/^	  set_entry(const set_entry& orig) {$/;"	f	struct:Dir_node::set_entry
 set_entry	Dir_node.h	/^   struct set_entry{$/;"	s	class:Dir_node
-set_equal	Node.h	/^bool Node::set_equal(unsigned char* set1, unsigned char* set2, int byte_size)$/;"	f	class:Node
-set_intersect	Node.h	/^void Node::set_intersect(unsigned char* set1, unsigned char* set2, int byte_size, unsigned char* intersect_set, bool& is_intersect)$/;"	f	class:Node
 set_node_count	Dir_node.h	/^void Dir_node::set_node_count(int new_count){$/;"	f	class:Dir_node
 set_node_count	Leaf_node.h	/^void Leaf_node::set_node_count(int new_count)$/;"	f	class:Leaf_node
 set_node_entry	Dir_node.h	/^void Dir_node::set_node_entry(int index, Dir_entry& new_entry){$/;"	f	class:Dir_node
 set_node_entry	Dir_node.h	/^void Dir_node::set_node_entry(int index, unsigned int new_entry_block_no, unsigned char* new_entry_DMBR){$/;"	f	class:Dir_node
 set_node_entry	Leaf_node.h	/^void Leaf_node::set_node_entry(int index, Leaf_entry new_entry)$/;"	f	class:Leaf_node
-set_size	Node.h	/^int Node::set_size(unsigned char* bitmap_set, int byte_size)$/;"	f	class:Node
 setlogFlag	logClass.cpp	/^void logClass::setlogFlag(bool value)$/;"	f	class:logClass
 sets	Dir_node.h	/^      int *sets; \/\/ array of indices into set_array$/;"	m	struct:Dir_node::aux_tree_node
 skip	main.cpp	/^    long skip;$/;"	m	struct:options	file:
@@ -281,8 +289,8 @@ string2binary	utility.cpp	/^void string2binary(const string &origString, unsigne
 string_to_int	logClass.cpp	/^int logClass::string_to_int(string s){$/;"	f	class:logClass
 string_to_int	utility.cpp	/^int string_to_int(string s){$/;"	f
 success	utility.h	/^enum Error_code { duplicate_error, not_present, success, overflow, underflow, range_err, fail };$/;"	e	enum:Error_code
-tmp_DMBR_bit_lut	main.cpp	/^int tmp_DMBR_bit_lut[DIM][MAX_ALPHABET_SIZE]; \/\/ Given a dim and a letter, store the coresponding bit in DMBR$/;"	v
-tmp_DMBR_byte_lut	main.cpp	/^int tmp_DMBR_byte_lut[DIM][MAX_ALPHABET_SIZE]; \/\/ Given a dim and a letter, store the coresponding byte in DMBR$/;"	v
+tmp_DMBR_bit_lut	main.cpp	/^int* tmp_DMBR_bit_lut[MAX_ALPHABET_SIZE]; \/\/ Given a dim and a letter, store the coresponding bit in DMBR$/;"	v
+tmp_DMBR_byte_lut	main.cpp	/^int* tmp_DMBR_byte_lut[MAX_ALPHABET_SIZE]; \/\/ Given a dim and a letter, store the coresponding byte in DMBR$/;"	v
 tree_size	ND_tree.h	/^   unsigned int tree_size; \/\/ Total number of entries inserted into the tree$/;"	m	class:ND_tree
 underflow	utility.h	/^enum Error_code { duplicate_error, not_present, success, overflow, underflow, range_err, fail };$/;"	e	enum:Error_code
 verify	ND_tree.h	/^void ND_tree::verify(){$/;"	f	class:ND_tree

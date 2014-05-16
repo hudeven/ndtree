@@ -40,7 +40,7 @@ public:
 
 
    // public member
-   static const int DIR_NODE_SIZE =  (DISK_BLOCK_SIZE - DIR_NODE_OVERHEAD) / (DMBR_SIZE + sizeof(unsigned int));
+   int DIR_NODE_SIZE;
 
     //use link
     static const int LEAF_NODE_SIZE =  (DISK_BLOCK_SIZE - LEAF_NODE_OVERHEAD) / sizeof(Leaf_entry);
@@ -56,7 +56,7 @@ private:
    void write_tree_info(fstream& ND_file); // Write the tree control data into disk
 
    // Data members
-   int alphabet_sizes[DIM]; // Dynamic array of alphabet sizes
+   int* alphabet_sizes; // Dynamic array of alphabet sizes
 
    double dir_min_util;
    double leaf_min_util;
@@ -77,6 +77,10 @@ private:
 
 
 ND_tree::ND_tree(){
+
+   alphabet_sizes = new int[DIM];
+   DIR_NODE_SIZE =  (DISK_BLOCK_SIZE - DIR_NODE_OVERHEAD) / (DMBR_SIZE + sizeof(unsigned int));
+
 }
 
 

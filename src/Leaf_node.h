@@ -17,8 +17,8 @@ public:
 
     //Error_code retrieve_by_box_query(const unsigned char box_query_data_DMBR[DMBR_SIZE], Leaf_entry* query_results, int& number_of_query_results);
     //Error_code retrieve_by_box_query_use_link(const unsigned char box_query_data_DMBR[DMBR_SIZE], Leaf_entry* query_results, int& number_of_query_results,int& number_of_io);
-    Error_code retrieve_by_box_query_use_link_v2(const unsigned char box_query_data_DMBR[DMBR_SIZE], Leaf_entry* query_results, int& number_of_query_results,int& number_of_io);
-    bool is_within_box(const unsigned char box_query_data_DMBR[DMBR_SIZE], unsigned char* DMBR);
+    Error_code retrieve_by_box_query_use_link_v2(const unsigned char* box_query_data_DMBR/*[DMBR_SIZE]*/, Leaf_entry* query_results, int& number_of_query_results,int& number_of_io);
+    bool is_within_box(const unsigned char* box_query_data_DMBR/*[DMBR_SIZE]*/, unsigned char* DMBR);
     Leaf_node(int* alphabet_sizes);
     Error_code retrieve(Leaf_entry & query_data);
     Error_code retrieve_by_hamming_dist(const Leaf_entry & query_data, int range, Leaf_entry* query_results, int& number_of_query_results,int &number_of_io);
@@ -98,7 +98,7 @@ Error_code Leaf_node::retrieve(Leaf_entry& query_data)
     else return success;
 }
 
-bool Leaf_node::is_within_box(const unsigned char box_query_data_DMBR[DMBR_SIZE], unsigned char* DMBR)
+bool Leaf_node::is_within_box(const unsigned char* box_query_data_DMBR, unsigned char* DMBR)
 {
     int j,i;
     bool matchOnThisDim;
@@ -122,7 +122,7 @@ bool Leaf_node::is_within_box(const unsigned char box_query_data_DMBR[DMBR_SIZE]
 //origin from retrieve_by_box_query_use_link(...)
 //use different ways to increase i/o number
 Error_code Leaf_node::retrieve_by_box_query_use_link_v2(
-    const unsigned char box_query_data_DMBR[DMBR_SIZE],  
+    const unsigned char* box_query_data_DMBR/*[DMBR_SIZE]*/,  
     Leaf_entry* query_results, 
     int& number_of_query_results,
     int& number_of_io)
@@ -206,7 +206,12 @@ Error_code Leaf_node::insert_new_data(Leaf_entry &new_data, double leaf_min_util
     if(count < LEAF_NODE_SIZE)
     { // room avaialbe
         entries[count] = new_data;
-        count++;
+	//debug
+	cout << "######################"<<endl;
+	cout << entries[0].key[0] <<endl;
+	cout << "######################"<<endl;
+        
+	count++;
         // create a new DMBR
         create_DMBR(entries, count, cur_DMBR);
         return success;
@@ -321,7 +326,7 @@ void Leaf_node::read_node(fstream& ND_file, unsigned int block_number)
     ND_tree_record record_array[LEAF_NODE_SIZE];
     unsigned char key_array[LEAF_NODE_SIZE][DIM];
     unsigned char cntkey_array[LEAF_NODE_SIZE][CNTDIM];
-
+int s = sizeof(key_array);
     ND_file.read((char*)(&count), sizeof(int));
 
     ND_file.read((char*)record_array, sizeof(record_array));
@@ -331,9 +336,12 @@ void Leaf_node::read_node(fstream& ND_file, unsigned int block_number)
     {
         entries[i].record = record_array[i];
         for(int j =0; j < DIM; j++)
-            entries[i].key[j] = key_array[i][j];
-        for(int j =0; j < CNTDIM; j++)
-            entries[i].cntkey[j] = cntkey_array[i][j];
+        {    
+	    unsigned char tmp = (*key_array+i)[j];
+	    entries[i].key[j] = (*key_array+i)[j];
+        }
+	for(int j =0; j < CNTDIM; j++)
+            entries[i].cntkey[j] = (*cntkey_array+i)[j];
     }
 }
 
