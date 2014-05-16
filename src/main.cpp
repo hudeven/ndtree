@@ -6,9 +6,9 @@ ofstream OutStream;
 
 // GLOBAL VARIABLES - Added by Alok to make interface of this
 // tree consistent with the rest of the trees.
-string globalBQFilename = "randomBoxqueryAll.txt";
+string globalBQFilename = "../data/box_query_random";
 string globalRQFilename = "rangequeryAll.txt";
-string globalDataFilename = "sourceData.txt";
+string globalDataFilename = "../data/data_random";
 string globalIndexFilename = "ndTree.dat";
 
 
@@ -781,10 +781,10 @@ int main(int argc, char *argv[])
     options opt;
     //Initialize options to Undef values
     // Name of the data file.
-    opt.datafile = "data/data_random";
+    opt.datafile = "../data/data_random";
     // Name of the index file
-    opt.idxfile = "data/index_random";
-    opt.bqfile = "data/box_query_random";
+    opt.idxfile = "../data/index_random";
+    opt.bqfile = "../data/box_query_random";
     opt.rqfile = UNDEF_STR;
     opt.range = 0.;
     opt.skip = 0;
