@@ -160,7 +160,7 @@ logO.log2File("----------");logO.log2File(i);logO.log2File("\n");
            {
                int n;
                instr >> n;
-               new_data.key[j] = n;
+               new_data.key[j] = n - '0';
            }
            new_data.record = 1; 
            result = ndt.insert_use_link(new_data, number_of_io);
