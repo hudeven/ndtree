@@ -19,7 +19,7 @@ const int CNTDIM = 0;
 //rest 2 are used as part of sourceData file name: sourceData32+10
 const int TOTAL_DSC_VALUE =8; //total DSC values to be read out
 const int TOTAL_CNT_VALUE =8;//total CNT values to be read out
-const int TOTAL_BOX_QUERY_NUM = 10;
+const int TOTAL_BOX_QUERY_NUM = 100;
 const int TOTAL_RANGE_QUERY_NUM =200;
 
 
