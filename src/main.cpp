@@ -377,7 +377,9 @@ void batchRandomBoxQuery()
 
     query_file.close();
     cout<<"boxSize= RANDOM, AvG boxquery I/O: " << static_cast<double>(total_number_of_io) / num_of_points << endl;
-    cout<<" AvG matched data point found="<< static_cast<double>(total_results_size)/num_of_points<< endl; 
+     cout<<" matched data point found="<< static_cast<double>(total_results_size)<< endl; 
+
+   cout<<" AvG matched data point found="<< static_cast<double>(total_results_size)/num_of_points<< endl; 
 
 
     cout << " AvG leaf node accessed: " << static_cast<double>(debug_boxQ_leaf_accessed) / num_of_points << endl;
