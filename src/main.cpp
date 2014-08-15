@@ -361,13 +361,18 @@ void batchRandomBoxQuery()
 
     int number_of_io ;
     int total_number_of_io = 0;
-
     int total_results_size=0;
+    int total_record = 0;
+   
     for(int i = 0; i < num_of_points; i++)
     {
         debug_boxQ_leaf_hit_peak=0;
         boxQueryData = makeRandomBoxQueryData(query_file);
         ndt.box_query(boxQueryData, query_results, query_results_size, number_of_io);
+	//calculate total record in the result
+	for(int k = 0; k < query_results_size; k++)
+		total_record += query_results[k].record;
+
         total_number_of_io += number_of_io;
         total_results_size += query_results_size;
         debug_boxQ_leaf_hit_for_all.push_back(debug_boxQ_leaf_hit_peak);
@@ -377,13 +382,12 @@ void batchRandomBoxQuery()
 
     query_file.close();
     cout<<"boxSize= RANDOM, AvG boxquery I/O: " << static_cast<double>(total_number_of_io) / num_of_points << endl;
-     cout<<" matched data point found="<< static_cast<double>(total_results_size)<< endl; 
-
-   cout<<" AvG matched data point found="<< static_cast<double>(total_results_size)/num_of_points<< endl; 
-
-
+  cout<<" AvG matched data point found="<< static_cast<double>(total_results_size)/num_of_points<< endl; 
     cout << " AvG leaf node accessed: " << static_cast<double>(debug_boxQ_leaf_accessed) / num_of_points << endl;
-
+  cout<<"total boxquery I/O="<<static_cast<double>(total_number_of_io)<<endl;
+     cout<<"total matched data points="<< static_cast<double>(total_results_size)<< endl; 
+     cout<<"total matched records = "<< static_cast<double>(total_record)<<endl;
+   
     assert(debug_boxQ_leaf_hit_for_all.size()==num_of_points);
     int debug_tatol=0;
     for(unsigned int i=0;i<debug_boxQ_leaf_hit_for_all.size();i++)

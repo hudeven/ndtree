@@ -13,13 +13,13 @@ const int QUERY_RESULTS_BUFFER_SIZE = 1000;
 typedef int ND_tree_record;
 const int MAX_LINE_IN_SOURCE_FILE = 1000000;
 
-const int DIM = 16;
+const int DIM = 18;
 const int CNTDIM = 0; 
 
 //rest 2 are used as part of sourceData file name: sourceData32+10
 const int TOTAL_DSC_VALUE =8; //total DSC values to be read out
 const int TOTAL_CNT_VALUE =8;//total CNT values to be read out
-const int TOTAL_BOX_QUERY_NUM = 100;
+const int TOTAL_BOX_QUERY_NUM = 1000;
 const int TOTAL_RANGE_QUERY_NUM =200;
 
 

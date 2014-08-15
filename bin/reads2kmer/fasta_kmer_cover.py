@@ -36,9 +36,9 @@ coverage = int(options.coverage)
 error = int(options.error)
 
 kmer_file = open(kmerFilename, 'w')
-cur = 0
 for lp in range(coverage):
     for seq_record in SeqIO.parse(readsFilename,"fasta"):
+	cur = 0
         cur_max = len(seq_record) - kmerLength
         #print(seq_record.id)
         #kmer_file.write(seq_record.id)

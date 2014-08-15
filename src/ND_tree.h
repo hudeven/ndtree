@@ -186,7 +186,8 @@ Error_code ND_tree::exact_query_use_link(Leaf_entry &query_data, int &number_of_
                number_of_io++;
                result = l_node->retrieve(query_data);
                if(result == success){
-				  //l_node->write_node(ND_file, covering_block_numbers[i]);
+		  //shit!!!
+		  l_node->write_node(ND_file, covered_block_numbers[i]);
                   not_found = false;
                   break;
                }

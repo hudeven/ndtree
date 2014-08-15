@@ -89,9 +89,17 @@ Error_code Leaf_node::retrieve(Leaf_entry& query_data)
                 break;
         if(j == DIM)
         {
-            //query_data = entries[i];
-            //entries[i].record++;
-            break;
+            //query_data = entries[i];           
+	    entries[i].record++;
+static int vf=0;
+vf+=entries[i].record;
+//cout<<vf<<endl;
+//            cout<<entries[i].record<<endl;
+
+//write to file
+
+
+	    break;
         }
     }
     if(i == count) return not_present;
@@ -350,7 +358,7 @@ void Leaf_node::write_node(fstream& ND_file, unsigned int block_number)
     for(int i = 0; i < count; i++)
     {
         record_array[i] = entries[i].record;
-        for(int j =0; j < DIM; j++)
+	for(int j =0; j < DIM; j++)
             key_array[i][j] = entries[i].key[j];
         for(int j =0; j < CNTDIM; j++)
             cntkey_array[i][j] = entries[i].cntkey[j];
