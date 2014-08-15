@@ -1,0 +1,54 @@
+Test genome: Homo sapiens, chromosome 18, study: PRJNA31257, Accession CM000680.2
+Case 1: 
+coverage=10, error rate=0, query number=1000, choose a box per kmer randomly
+k=6:
+a)	box size=1:
+I/O = 10879		avg I/O = 10879/1000=10.879		match=1000 
+b)	box isze =2:
+I/O = 14323		avg I/O = 14323/2000 = 7.1615		match = 1463
+c)	box size=3:
+I/O = 16055		avg I/O = 16055/3000 = 5.3517		match=1954
+d)	box size=4:
+I/O = 15807		avg I/O =15807/4000 = 3.952		match=2429
+
+K = 9:
+a)	box size=1:
+I/O = 8252		avg I/O = 8252/1000 = 8.252		match=1000
+b)	box size =2r
+I/O = 10591		avg I/O = 10591/2000 = 5.30		match = 1044
+c)	box size =3
+I/O = 11620		avg I/O = 11620/3000= 3.87		match = 1111
+d) box size=4
+	I/O = 11500 	avg I/O=11500/4000 = 2.875 	match=1154
+
+K=12:
+a)	size =1
+I/O = 9099		avg I/O = 9099/1000=9.099		match = 1000
+b)	size=2
+I/O=10898		avg I/O =10898/2000=5.45		match = 1018
+
+c)	size=3
+I/O=11804		avg I/O=11804/3000=3.935		match=1030
+d)	size=4
+I/O = 11795		avg I/O=11795/4000=2.95		match=1036
+
+K=15
+a)	size =1
+I/O= 9777		avg I/O=9777/1000=9.777		match=1000
+b)	size=2
+11379				11379/2000=5.69				1005
+c)	size=3
+11966				11966/3000=3.99				1014
+d)	size=4
+I/O = 11891		avg I/O=11891/4000=2.97		match=1014
+
+K=18
+a)	size=1
+8884				8884/1000=8.884		match=1000
+b)	size=2
+10370				10370/2000=5.185		match=1001
+c)	size=3
+10947				10947/3000=3.649		match=1004
+d)	size=4
+10826				10826/4000=2.71		match=1015
+
