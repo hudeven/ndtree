@@ -10,16 +10,17 @@ ENVIRONMENT RUNNING_ENVIRONMENT = UNIX;
 
 const int QUERY_RESULTS_BUFFER_SIZE = 1000;
 
+typedef int ND_tree_record_count;
 typedef int ND_tree_record;
 const int MAX_LINE_IN_SOURCE_FILE = 1000000;
 
-const int DIM = 18;
+const int DIM = 10;
 const int CNTDIM = 0; 
 
 //rest 2 are used as part of sourceData file name: sourceData32+10
 const int TOTAL_DSC_VALUE =8; //total DSC values to be read out
 const int TOTAL_CNT_VALUE =8;//total CNT values to be read out
-const int TOTAL_BOX_QUERY_NUM = 1000;
+const int TOTAL_BOX_QUERY_NUM = 100;
 const int TOTAL_RANGE_QUERY_NUM =200;
 
 
@@ -87,6 +88,13 @@ int BestChild_notcovered_area_enlarge =0;
 const int enforce_minUtil_for_exhaustSplit =1;//always 1
 const int try_all_dim_with_minUtil = 1;
 
+int readid_global;
+char typeid_global;
 
+string globalAuxFilename = "../data/aux";
+string globalRecordFilename = "../data/record";
+string globalBQFilename = "../data/box_query_random";
+
+char record_type[9999999][16]={'\0'};
 
 #endif

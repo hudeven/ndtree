@@ -9,16 +9,21 @@ parser.add_option('-k','--klength', dest = "kmerLength", help = "Length of kmer"
 parser.add_option('-f','--readsfile', dest = "readsFilename", help = "Name of the reads file")
 (options, args) = parser.parse_args(sys.argv[1:])
 kmerFilename = options.outputFile
+seqNameFile = kmerFilename + ".name"
+seqIdFile = kmerFilename + ".id"
+seqDescriptionFile = kmerFilename + ".desc"
 readsFilename = options.readsFilename
 kmerLength = int(options.kmerLength)
 
 kmer_file = open(kmerFilename, 'w')
-cur = 0
+seqname_file = open(seqNameFile, 'w')
+seqid_file = open(seqIdFile, "w")
+seqdesc_file = open(seqDescriptionFile, 'w')
+
 for seq_record in SeqIO.parse(readsFilename,"fasta"):
+    cur = 0
     cur_max = len(seq_record) - kmerLength
-    #print(seq_record.id)
-    #kmer_file.write(seq_record.id)
-    while cur <= cur_max:
+    for cur in range(0, cur_max):
 	kmer = list(seq_record.seq[cur:cur+kmerLength]);
 	i = 0	
         for mer in kmer:
@@ -35,16 +40,8 @@ for seq_record in SeqIO.parse(readsFilename,"fasta"):
 		i = i+1
 	kmerStr = ' '.join(kmer)
 	kmer_file.write(kmerStr + "\n")       
-	cur = cur + 1
-
+	seqname_file.write(seq_record.name+"\n")
+	seqid_file.write(seq_record.id+"\n")
+	seqdesc_file.write("1000 "+seq_record.description+"\n");
 kmer_file.close()
 
-#print(repr(seq_record.seq))
-#print(len(seq_record))
-#record_iterator = SeqIO.parse("16s.fa", "fasta")
-#record = SeqIO.read90
-#first = next(record_iterator)	
-#while first is not None:
-#    print(first.id)
-#    print(first.description)
-#    first = next(record_iterator)

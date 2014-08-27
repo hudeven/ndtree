@@ -6,11 +6,9 @@ ofstream OutStream;
 
 // GLOBAL VARIABLES - Added by Alok to make interface of this
 // tree consistent with the rest of the trees.
-string globalBQFilename = "../data/box_query_random";
 string globalRQFilename = "rangequeryAll.txt";
 string globalDataFilename = "../data/data_random";
 string globalIndexFilename = "ndTree.dat";
-
 
 //#define MAX_COPIES_OF_DATA_FILE 50
 
@@ -162,7 +160,7 @@ logO.log2File("----------");logO.log2File(i);logO.log2File("\n");
                instr >> n;
                new_data.key[j] = n - '0';
            }
-           new_data.record = 1; 
+           new_data.record_count = 1; 
            result = ndt.insert_use_link(new_data, number_of_io);
            if(result == duplicate_error)
             {
@@ -221,7 +219,8 @@ void batchBuild_with_duplicate(long  size)
             instr >> n;
             new_data.key[j] = n - '0';
         }
-        new_data.record = 1; 
+        new_data.record_count = 1; 
+	//new_data.record = 0;
         result = ndt.insert_use_link(new_data, number_of_io);
         if(result == duplicate_error)
         {
@@ -239,6 +238,99 @@ void batchBuild_with_duplicate(long  size)
     cout<<"Total data points read:"<<size <<endl;
     ndt.print_information( );
 }
+
+
+void clear_record()
+{
+fstream typeid_file;
+const char* typeid_filename = (globalRecordFilename+".typeid").c_str();
+typeid_file.open(typeid_filename);
+if(typeid_file.fail())
+{
+    cout<<"can't open file "<< typeid_filename <<endl;
+    exit(1);
+}
+typeid_file.clear();
+typeid_file.close();
+
+}
+//Insert kmers with a link to the record(readid,annotation)
+void batchBuild_with_duplicate_record(long  size)
+{
+
+
+    clear_record();
+
+    logO.clearLogs();
+    duplicateDataPoints=0;
+    ND_tree ndt;
+    Leaf_entry new_data/*, query_data, db_data*/;
+    Error_code result;
+    ndt.create_empty_tree(A, dir_min_util, leaf_min_util, globalIndexFilename);
+    ndt.read_existing_tree(globalIndexFilename);
+    long num_of_points=size;
+    ifstream data_file;
+    ifstream aux_file;
+    data_file.open(globalDataFilename.c_str());
+    aux_file.open(globalAuxFilename.c_str());
+    if (data_file.fail())
+    {
+        cout<<"cant open file "<<globalDataFilename<<endl;
+        exit(1);
+    }
+
+    if(aux_file.fail())
+    {
+	cout<<"cant open file "<<globalAuxFilename<<endl;
+	exit(1);
+    }
+    int number_of_io = 0;
+    string line;
+    string line_aux;
+    getline(data_file, line);
+    getline(aux_file, line_aux);
+    int distinctDataPoints = 0;
+    char n;
+    char n_aux;
+    for(long  i = 0; i < num_of_points && !data_file.eof(); i++)
+    {
+#ifdef LOG_VECTOR_INDEX
+        logO.log2File("----------");logO.log2File(i);logO.log2File("\n");
+#endif
+#ifdef LOG_SPLITTING_VECTOR_INDEX
+        vector_index = i;
+#endif
+        istringstream instr(line);
+	istringstream instr_aux(line_aux);
+        for(int j = 0; j < DIM; j++)
+        {
+            instr >> n;
+            new_data.key[j] = n - '0';
+        }
+	
+	instr_aux >> readid_global;
+	instr_aux >> typeid_global;
+
+        new_data.record_count = 1; 
+        result = ndt.insert_use_link(new_data, number_of_io);
+        if(result == duplicate_error)
+        {
+            duplicateDataPoints++;
+        }
+        else
+        {
+            distinctDataPoints++;
+        }
+        getline(data_file, line);
+	getline(aux_file, line_aux);
+    }
+    data_file.close();
+    cout<<"Duplicate data points encountered:"<<duplicateDataPoints<<endl;
+    cout<<"DistinctDataPoints data points indexed:"<<distinctDataPoints<<endl;
+    cout<<"Total data points read:"<<size <<endl;
+    ndt.print_information( );
+}
+
 
 void batchRangeQuery(    )
 {
@@ -334,13 +426,139 @@ void batchRangeQuery(    )
         system("pause");
 }
 
+//output the cancer types in the query result to file
+void output_records(Leaf_entry* query_results, int query_results_size)
+{
+    fstream typeid_file, query_result_file;
+    const char* typeid_filename = (globalRecordFilename+".typeid").c_str();
+    const char* query_result_filename = (globalBQFilename+ ".result").c_str();
+    typeid_file.open(typeid_filename, fstream::in | fstream::out);
+    query_result_file.open(query_result_filename, fstream::in | fstream::out| fstream::app);
+
+    if(typeid_file.fail())
+    {
+	cout<<"can't open file "<<typeid_filename<<endl;
+    }
+    if(query_result_file.fail())
+    {
+	cout<<"can't open file "<<query_result_filename<<endl;
+    }
+
+    unsigned char type_array[256]={'\0'};
+    unsigned char output[256]={'\0'};
+    output[0]=0;
+    int type_num;
+    int record_id;
+
+for(int k=0; k<query_results_size; k++)
+{
+    record_id = query_results[k].record;
+
+    typeid_file.seekg(record_id * sizeof(type_array), ios::beg);
+    typeid_file.read((char*)type_array, sizeof(type_array));
+
+    type_num = type_array[0];
+    int i;
+
+    for(i=1; i<=type_num; i++)
+    {
+	int p;
+	for(p=1; p<=output[0]; p++)
+	{
+	    if(type_array[i]==output[p])
+		break;
+	}
+	if(p>output[0])
+	{
+	    output[0]++;
+	    output[output[0]]=type_array[i];
+	}
+    }
+}
+ 
+    query_result_file << (unsigned char)(output[0]+'0')<<" ";
+    for(int i=1; i<=output[0]; i++)
+	query_result_file << output[i]<<" ";
+    query_result_file << endl;
+
+    typeid_file.close();
+    query_result_file.close();
+
+}
+
+
+//output the cancer types in the query result to file
+void output_records_array(Leaf_entry* query_results, int query_results_size)
+{
+    fstream typeid_file, query_result_file;
+    const char* query_result_filename = (globalBQFilename+ ".result").c_str();
+    query_result_file.open(query_result_filename, fstream::in | fstream::out| fstream::app);
+
+    if(query_result_file.fail())
+    {
+	cout<<"can't open file "<<query_result_filename<<endl;
+    }
+
+    unsigned char type_array[256]={'\0'};
+    unsigned char output[256]={'\0'};
+    output[0]=0;
+    int type_num;
+    int record_id;
+
+for(int k=0; k<query_results_size; k++)
+{
+    record_id = query_results[k].record;
+    type_num = record_type[record_id][0];
+    int i;
+
+    for(i=1; i<=type_num; i++)
+    {
+	int p;
+	for(p=1; p<=output[0]; p++)
+	{
+	    if(record_type[record_id][i]==output[p])
+		break;
+	}
+	if(p>output[0])
+	{
+	    output[0]++;
+	    output[output[0]]=record_type[record_id][i];
+	}
+    }
+}
+ 
+    query_result_file << (unsigned char)(output[0]+'0')<<" ";
+    for(int i=1; i<=output[0]; i++)
+	query_result_file << output[i]<<" ";
+    query_result_file << endl;
+
+    typeid_file.close();
+    query_result_file.close();
+
+}
+
+void clear_result()
+{
+fstream  query_result_file;
+const char* query_result_filename = (globalBQFilename+".result").c_str();
+query_result_file.open(query_result_filename, ios::out | ios::trunc);
+if(query_result_file.fail())
+{
+    cout<<"can't open file "<<query_result_filename<<endl;
+    exit(1);
+}
+query_result_file.clear();
+query_result_file.close();
+}
+
 void batchRandomBoxQuery()
 {
+clear_result();
     string input=globalIndexFilename;
     ND_tree ndt;
     ndt.read_existing_tree(input);
     LocalDMBRInfoCalculation();
-// main box query loop in the original function
+// box query loop in the original function
 // begins here
     Leaf_entry query_results[QUERY_RESULTS_BUFFER_SIZE];
     int query_results_size;
@@ -362,17 +580,22 @@ void batchRandomBoxQuery()
     int number_of_io ;
     int total_number_of_io = 0;
     int total_results_size=0;
-    int total_record = 0;
+    int total_record_num = 0;
    
-    for(int i = 0; i < num_of_points; i++)
-    {
+    while(!query_file.eof()){
         debug_boxQ_leaf_hit_peak=0;
         boxQueryData = makeRandomBoxQueryData(query_file);
         ndt.box_query(boxQueryData, query_results, query_results_size, number_of_io);
 	//calculate total record in the result
 	for(int k = 0; k < query_results_size; k++)
-		total_record += query_results[k].record;
-
+		total_record_num += query_results[k].record_count;
+	
+	if(query_results_size>0)
+	{
+	   // output_records(query_results, query_results_size);
+	   output_records_array(query_results, query_results_size);
+	
+	}
         total_number_of_io += number_of_io;
         total_results_size += query_results_size;
         debug_boxQ_leaf_hit_for_all.push_back(debug_boxQ_leaf_hit_peak);
@@ -386,9 +609,9 @@ void batchRandomBoxQuery()
     cout << " AvG leaf node accessed: " << static_cast<double>(debug_boxQ_leaf_accessed) / num_of_points << endl;
   cout<<"total boxquery I/O="<<static_cast<double>(total_number_of_io)<<endl;
      cout<<"total matched data points="<< static_cast<double>(total_results_size)<< endl; 
-     cout<<"total matched records = "<< static_cast<double>(total_record)<<endl;
+     cout<<"total matched records = "<< static_cast<double>(total_record_num)<<endl;
    
-    assert(debug_boxQ_leaf_hit_for_all.size()==num_of_points);
+    //assert(debug_boxQ_leaf_hit_for_all.size()==num_of_points);
     int debug_tatol=0;
     for(unsigned int i=0;i<debug_boxQ_leaf_hit_for_all.size();i++)
     {
@@ -410,7 +633,7 @@ void batchBoxQuery()
     ndt.read_existing_tree(input);
     LocalDMBRInfoCalculation();
 
-    for(boxSize=BOX_SIZE_START_AT;boxSize<BOX_SIZE_STOP_BEFORE;boxSize+=BOX_SIZE_STEP)
+	for(boxSize=BOX_SIZE_START_AT;boxSize<BOX_SIZE_STOP_BEFORE;boxSize+=BOX_SIZE_STEP)
     {
         //logO.clearLogs();
         Leaf_entry query_results[QUERY_RESULTS_BUFFER_SIZE];
@@ -669,6 +892,8 @@ void LinearScanBoxQuery(int dataNUM)
 #define OPT_TREEFILE "-idxfile"
 #define OPT_DSCDIM "-dscdim"
 #define OPT_LOADFILE "-load_file"
+#define OPT_AUXFILE "-aux_file"
+#define OPT_RECORDFILE "-record_file"
 #define OPT_BQFILE "-bqfile"
 #define OPT_RQFILE "-rqfile"
 #define OPT_RANGE "-range"
@@ -682,6 +907,8 @@ struct options
 {
     // Name of the data file.
     string datafile;
+    string auxfile;
+    string recordfile;
     // Name of the index file
     string idxfile;
     string bqfile;// box query file
@@ -697,6 +924,8 @@ void get_options(int argc, char **argv, struct options *opt)
 {
     string opt_idxfile(OPT_TREEFILE);
     string opt_load_file(OPT_LOADFILE);
+    string opt_aux_file(OPT_AUXFILE);
+    string opt_record_file(OPT_RECORDFILE);
     string opt_bqfile(OPT_BQFILE);
     string opt_rqfile(OPT_RQFILE);
     string opt_range(OPT_RANGE);
@@ -726,6 +955,16 @@ void get_options(int argc, char **argv, struct options *opt)
             opt->datafile = argv[i+1];
             i++;
         }
+	if(!opt_aux_file.compare(argv[i]))
+	{
+	    opt->auxfile = argv[i+1];
+	    i++;
+	}
+	if(!opt_record_file.compare(argv[i]))
+	{
+	    opt->recordfile = argv[i+1];
+	    i++;
+	}
         if(!opt_range.compare(argv[i]))
         {
             stringstream s(argv[i+1]);
@@ -776,7 +1015,6 @@ void display_help()
     cout<<"\tANY EXISTING INDEX FILE WILL BE DELETED"<<endl;
 }
 
-
 int main(int argc, char *argv[])
 {
     if(nodeSplitType==ORIGINAL)
@@ -788,7 +1026,9 @@ int main(int argc, char *argv[])
     //Initialize options to Undef values
     // Name of the data file.
     opt.datafile = "../data/data_random";
-    // Name of the index file
+    opt.auxfile = "../data/aux";
+    opt.recordfile = "../data/record";
+     //Name of the index file
     opt.idxfile = "../data/index_random";
     opt.bqfile = "../data/box_query_random";
     opt.rqfile = UNDEF_STR;
@@ -799,6 +1039,17 @@ int main(int argc, char *argv[])
     opt.help = false;
     get_options(argc, argv, &opt);
 
+    if(opt.auxfile.compare(UNDEF_STR))
+    {
+	cout<<"global aux file name is: "<<opt.auxfile<<endl;
+	globalAuxFilename = opt.auxfile;
+    }
+    if(opt.recordfile.compare(UNDEF_STR))
+   {
+	cout<<"global aux file name is: "<<opt.recordfile<<endl;
+	globalRecordFilename = opt.recordfile;
+    }
+
     if(opt.idxfile.compare(UNDEF_STR))
     {
     //    logO.log2File(opt.idxfile.insert(0, "Index will be created in the file ").c_str());
@@ -808,14 +1059,19 @@ int main(int argc, char *argv[])
     if(opt.datafile.compare(UNDEF_STR))
     {
         globalDataFilename = opt.datafile;
+	//globalAuxFilename = opt.auxfile;
       //  logO.log2File(opt.datafile.insert(0, "Source data file : ").c_str());
         cout<<"Source data file :"<<opt.datafile<<endl;
+        cout<<"Source aux file :"<<opt.auxfile<<endl;
         cout<<"Number of records to load "<<opt.count<<endl;
         if(opt.newtree)
         {
         //    log0.log2File("Creatung a new file");
             cout<<"Creating a new index file"<<endl;
-            batchBuild_with_duplicate(opt.count);
+            
+	    //original method, without link to data record
+	    //batchBuild_with_duplicate(opt.count);
+            batchBuild_with_duplicate_record(opt.count);
         }
         else
         {

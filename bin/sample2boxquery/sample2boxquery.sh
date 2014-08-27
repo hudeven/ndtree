@@ -1,0 +1,1 @@
+python sample2boxquery.py --klength 16 --output "/home/steven/workspace/ndtree/data/cancer/query/boxquery" --reference "/home/steven/workspace/ndtree/data/test.fa" --sample "/home/steven/workspace/ndtree/data/cancer/ref/0_ref.fa"

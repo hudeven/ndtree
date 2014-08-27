@@ -13,7 +13,7 @@ BOX_SIZE_STOP_BEFORE	config.h	/^const int BOX_SIZE_STOP_BEFORE = A[0];$/;"	v
 BYTES_PER_DIM_IN_DMBR	config.h	/^const int BYTES_PER_DIM_IN_DMBR = ((ALPHA%8)==0)?(ALPHA\/8):(ALPHA\/8+1);$/;"	v
 CNTDIM	config.h	/^const int CNTDIM = 0; $/;"	v
 CONFIG_H	config.h	2;"	d
-DIM	config.h	/^const int DIM = 16;$/;"	v
+DIM	config.h	/^const int DIM = 18;$/;"	v
 DIR_ENTRY_H	Dir_entry.h	2;"	d
 DIR_NODE_H	Dir_node.h	2;"	d
 DIR_NODE_OVERHEAD	Dir_node.h	/^const int DIR_NODE_OVERHEAD = 4; \/\/ int count$/;"	v
@@ -31,6 +31,7 @@ Dir_node	Dir_node.h	/^Dir_node::Dir_node(int* alphabet_sizes):Node(alphabet_size
 Dir_node	Dir_node.h	/^class Dir_node:public Node{$/;"	c
 ENVIRONMENT	config.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	g
 Error_code	utility.h	/^enum Error_code { duplicate_error, not_present, success, overflow, underflow, range_err, fail };$/;"	g
+GCC	makefile	/^GCC=g++$/;"	m
 INT_INF	utility.h	/^const int INT_INF = numeric_limits<int> :: max( );$/;"	v
 Knapsack_recursive_forNDTree	utility.cpp	/^vector<int> Knapsack_recursive_forNDTree($/;"	f
 LEAF_ENTRY_H	Leaf_entry.h	4;"	d
@@ -58,29 +59,31 @@ ND_file_name	ND_tree.h	/^   char ND_file_name[ND_FILE_NAME_LENGTH]; \/\/ The nam
 ND_tree	ND_tree.h	/^ND_tree::ND_tree(){$/;"	f	class:ND_tree
 ND_tree	ND_tree.h	/^class ND_tree{$/;"	c
 ND_tree_record	config.h	/^typedef int ND_tree_record;$/;"	t
+ND_tree_record_count	config.h	/^typedef int ND_tree_record_count;$/;"	t
 NODE_H	Node.h	2;"	d
 Node	Node.h	/^Node::Node(int* alphabet_sizes)$/;"	f	class:Node
 Node	Node.h	/^class Node$/;"	c
-OPT_BQFILE	main.cpp	666;"	d	file:
-OPT_COUNT	main.cpp	670;"	d	file:
-OPT_DSCDIM	main.cpp	664;"	d	file:
-OPT_HELP	main.cpp	672;"	d	file:
-OPT_LOADFILE	main.cpp	665;"	d	file:
-OPT_NEW	main.cpp	671;"	d	file:
-OPT_RANGE	main.cpp	668;"	d	file:
-OPT_RQFILE	main.cpp	667;"	d	file:
-OPT_SKIP	main.cpp	669;"	d	file:
-OPT_TREEFILE	main.cpp	663;"	d	file:
+OPT_BQFILE	main.cpp	734;"	d	file:
+OPT_COUNT	main.cpp	738;"	d	file:
+OPT_DSCDIM	main.cpp	731;"	d	file:
+OPT_HELP	main.cpp	740;"	d	file:
+OPT_LOADFILE	main.cpp	732;"	d	file:
+OPT_NEW	main.cpp	739;"	d	file:
+OPT_RANGE	main.cpp	736;"	d	file:
+OPT_RECORDFILE	main.cpp	733;"	d	file:
+OPT_RQFILE	main.cpp	735;"	d	file:
+OPT_SKIP	main.cpp	737;"	d	file:
+OPT_TREEFILE	main.cpp	730;"	d	file:
 OutStream	main.cpp	/^ofstream OutStream;$/;"	v
 QUERY_RESULTS_BUFFER_SIZE	config.h	/^const int QUERY_RESULTS_BUFFER_SIZE = 1000;$/;"	v
 RANGE_SIZE_STEP	config.h	/^const int RANGE_SIZE_STEP = 1;$/;"	v
 RUNNING_ENVIRONMENT	config.h	/^ENVIRONMENT RUNNING_ENVIRONMENT = UNIX;$/;"	v
-TOTAL_BOX_QUERY_NUM	config.h	/^const int TOTAL_BOX_QUERY_NUM = 10000;$/;"	v
+TOTAL_BOX_QUERY_NUM	config.h	/^const int TOTAL_BOX_QUERY_NUM = 1000;$/;"	v
 TOTAL_CNT_VALUE	config.h	/^const int TOTAL_CNT_VALUE =8;\/\/total CNT values to be read out$/;"	v
 TOTAL_DSC_VALUE	config.h	/^const int TOTAL_DSC_VALUE =8; \/\/total DSC values to be read out$/;"	v
 TOTAL_RANGE_QUERY_NUM	config.h	/^const int TOTAL_RANGE_QUERY_NUM =200;$/;"	v
-UNDEF_LONG	main.cpp	674;"	d	file:
-UNDEF_STR	main.cpp	673;"	d	file:
+UNDEF_LONG	main.cpp	742;"	d	file:
+UNDEF_STR	main.cpp	741;"	d	file:
 UNIX	config.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	e	enum:ENVIRONMENT
 UTILITY_H	utility.h	2;"	d
 WINDOWS	config.h	/^enum ENVIRONMENT {UNIX, WINDOWS};$/;"	e	enum:ENVIRONMENT
@@ -91,6 +94,7 @@ aux_tree_node	Dir_node.h	/^   struct aux_tree_node{$/;"	s	class:Dir_node
 available_block_numbers	ND_tree.h	/^   stack<unsigned int> available_block_numbers; \/\/ The block numbers (<= max_block_number) of the nodes being deleted and become available again$/;"	m	class:ND_tree
 batchBoxQuery	main.cpp	/^void batchBoxQuery()$/;"	f
 batchBuild_with_duplicate	main.cpp	/^void batchBuild_with_duplicate(long  size)$/;"	f
+batchBuild_with_duplicate_record	main.cpp	/^void batchBuild_with_duplicate_record(long  size)$/;"	f
 batchGrow_with_duplicate	main.cpp	/^void batchGrow_with_duplicate(long skipSize, long sizeGrowTo)$/;"	f
 batchRandomBoxQuery	main.cpp	/^void batchRandomBoxQuery()$/;"	f
 batchRangeQuery	main.cpp	/^void batchRangeQuery(    )$/;"	f
@@ -161,8 +165,8 @@ get_node_entry	Leaf_node.h	/^void Leaf_node::get_node_entry(int index, Leaf_entr
 get_options	main.cpp	/^void get_options(int argc, char **argv, struct options *opt)$/;"	f
 get_single_DMBR	Leaf_node.h	/^void Leaf_node::get_single_DMBR(unsigned char* cur_DMBR,int index)$/;"	f	class:Leaf_node
 get_tree_size	ND_tree.h	/^unsigned int ND_tree::get_tree_size(){$/;"	f	class:ND_tree
-globalBQFilename	main.cpp	/^string globalBQFilename = "randomBoxqueryAll.txt";$/;"	v
-globalDataFilename	main.cpp	/^string globalDataFilename = "sourceData.txt";$/;"	v
+globalBQFilename	main.cpp	/^string globalBQFilename = "..\/data\/box_query_random";$/;"	v
+globalDataFilename	main.cpp	/^string globalDataFilename = "..\/data\/data_random";$/;"	v
 globalIndexFilename	main.cpp	/^string globalIndexFilename = "ndTree.dat";$/;"	v
 globalRQFilename	main.cpp	/^string globalRQFilename = "rangequeryAll.txt";$/;"	v
 height	ND_tree.h	/^   int height; \/\/ The height of the tree$/;"	m	class:ND_tree
@@ -231,7 +235,9 @@ read_node	Leaf_node.h	/^void Leaf_node::read_node(fstream& ND_file, unsigned int
 read_node_dynamic	Dir_node.h	/^void Dir_node::read_node_dynamic(fstream& ND_file, unsigned int block_number){$/;"	f	class:Dir_node
 read_node_static	Dir_node.h	/^void Dir_node::read_node_static(fstream& ND_file, unsigned int block_number){$/;"	f	class:Dir_node
 read_tree_info	ND_tree.h	/^void ND_tree::read_tree_info(fstream& ND_file)$/;"	f	class:ND_tree
-record	Leaf_entry.h	/^    ND_tree_record record; \/\/ Actual data, usually a pointer$/;"	m	struct:Leaf_entry
+record	Leaf_entry.h	/^    ND_tree_record record;    $/;"	m	struct:Leaf_entry
+record_count	Leaf_entry.h	/^    ND_tree_record_count record_count; \/\/ Actual data, usually a pointer$/;"	m	struct:Leaf_entry
+recordfile	main.cpp	/^    string recordfile;$/;"	m	struct:options	file:
 resizeSetEntry	Dir_node.h	/^	  void resizeSetEntry(int numSet)$/;"	f	struct:Dir_node::set_entry
 resizeSets	Dir_node.h	/^	  void resizeSets(int numSet)$/;"	f	struct:Dir_node::aux_tree_node
 retrieve	Leaf_node.h	/^Error_code Leaf_node::retrieve(Leaf_entry& query_data)$/;"	f	class:Leaf_node

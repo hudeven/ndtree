@@ -2,7 +2,7 @@
 #include "Node.h"
 #include "Leaf_entry.h"
 #include <algorithm>
-
+#include <iostream>
 const int LEAF_NODE_OVERHEAD = 4; // int count
 
 //extern const int DIR_NODE_OVERHEAD;
@@ -78,6 +78,100 @@ Leaf_node::Leaf_node(int* alphabet_sizes):Node(alphabet_sizes)
    count = 0;
 }
 
+void moveToLine(fstream file, int lineNum)
+{
+}
+
+
+void update_record(int record_id)
+{
+fstream readid_file, typeid_file;
+const char* readid_filename = (globalRecordFilename+".readid").c_str();
+const char* typeid_filename = (globalRecordFilename+".typeid").c_str();
+
+readid_file.open(readid_filename,fstream::in | fstream::out);
+typeid_file.open(typeid_filename,fstream::in | fstream::out);
+
+if(readid_file.fail())
+{
+    cout<<"can't open file .readid"<<endl;
+    exit(1);
+}
+if(typeid_file.fail())
+{
+    cout<<"can't open file .typeid"<<endl;
+    exit(1);
+}
+unsigned char type_array[256]={'\0'};
+int type_num;
+typeid_file.seekg(record_id * sizeof(type_array), ios::beg);
+typeid_file.read((char*)type_array, sizeof(type_array));
+
+type_num = type_array[0];
+int i;
+for(i=1; i<=type_num; i++)
+{
+    if(typeid_global == type_array[i])
+	break;
+}
+if(i<=type_num)
+    return;
+
+type_num++;
+type_array[type_num] = typeid_global;
+type_array[0] = type_num;
+
+/*
+int min =0;
+
+for(int i=1; i<type_num+1; i++)
+{
+    min = i;
+    for(int j=i; j<type_num+1; j++)
+    {
+	if(type_array[j]<type_array[min])
+	{
+	    min = j;
+	}
+    }
+    if(min != i)
+    {
+	int tmp = type_array[i];
+	type_array[i] = type_array[min];
+	type_array[min] = tmp;
+    }
+    
+}
+*/
+typeid_file.seekp(record_id * sizeof(type_array), ios::beg);
+
+typeid_file.write((const char*)type_array, sizeof(type_array));
+
+readid_file.close();
+typeid_file.close();
+
+}
+
+void update_record_array(int record_id)
+{
+
+int type_num;
+type_num = record_type[record_id][0];
+int i;
+for(i=1; i<=type_num; i++)
+{
+    if(typeid_global == record_type[record_id][i])
+	break;
+}
+if(i<=type_num)
+    return;
+
+type_num++;
+record_type[record_id][type_num] = typeid_global;
+record_type[record_id][0] = type_num;
+
+}
+
 
 Error_code Leaf_node::retrieve(Leaf_entry& query_data)
 {
@@ -90,9 +184,20 @@ Error_code Leaf_node::retrieve(Leaf_entry& query_data)
         if(j == DIM)
         {
             //query_data = entries[i];           
-	    entries[i].record++;
+	    entries[i].record_count++;
+
+update_record(entries[i].record);	    
+
+//array record_type for test
+update_record_array(entries[i].record);
+//array record_type for test
+
+
+	    //make a link to record
+	    //entries[i].record = query_data.record;
+
 static int vf=0;
-vf+=entries[i].record;
+vf+=entries[i].record_count;
 //cout<<vf<<endl;
 //            cout<<entries[i].record<<endl;
 
@@ -124,7 +229,40 @@ bool Leaf_node::is_within_box(const unsigned char box_query_data_DMBR[DMBR_SIZE]
     return true;
 }
 
+void output_record(int record_id)
+{
+    record_id--;
+    fstream typeid_file, query_result_file;
+    const char* typeid_filename = (globalRecordFilename+".typeid").c_str();
+    const char* query_result_filename = (globalBQFilename+ ".result").c_str();
+    typeid_file.open(typeid_filename, fstream::in | fstream::out);
+    query_result_file.open(query_result_filename, fstream::in | fstream::out| fstream::app);
 
+    if(typeid_file.fail())
+    {
+	cout<<"can't open file "<<typeid_filename<<endl;
+    }
+    if(query_result_file.fail())
+    {
+	cout<<"can't open file "<<query_result_filename<<endl;
+    }
+
+    unsigned char type_array[256]={'\0'};
+    int type_num;
+    typeid_file.seekg(record_id * sizeof(type_array));
+    typeid_file.read((char*)type_array, sizeof(type_array));
+
+    type_num = type_array[0];
+    type_num++;
+    int i;
+    for(i=0; i<type_num; i++)
+	query_result_file << type_array[i]<<" ";
+    query_result_file << endl;
+
+    typeid_file.close();
+    query_result_file.close();
+
+}
 
 //dec13
 //origin from retrieve_by_box_query_use_link(...)
@@ -146,7 +284,7 @@ Error_code Leaf_node::retrieve_by_box_query_use_link_v2(
     for(i = 0; i < count; i++)
     {
 
-        totalEntrieNum+=entries[i].record;
+        totalEntrieNum+=entries[i].record_count;
 
         unsigned char tmp_DMBR[DMBR_SIZE];
 
@@ -185,7 +323,7 @@ Error_code Leaf_node::retrieve_by_hamming_dist(const Leaf_entry& query_data, int
     int cur_dist;
     for(i = 0; i < count; i++)
     {
-        totalEntrieNum+=entries[i].record;
+        totalEntrieNum+=entries[i].record_count;
         cur_dist = 0;
         for(j = 0; j < DIM && cur_dist <= range; j++)
             if(entries[i].key[j] != query_data.key[j])cur_dist++;
@@ -209,8 +347,67 @@ Error_code Leaf_node::retrieve_by_hamming_dist(const Leaf_entry& query_data, int
         return success;
 }
 
+std::fstream& GotoLine(std::fstream& file, unsigned int num){
+    file.seekg(std::ios::beg);
+    for(int i=0; i < num - 1; ++i){
+        file.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+    }
+    return file;
+}
+
 Error_code Leaf_node::insert_new_data(Leaf_entry &new_data, double leaf_min_util, int* alphabet_sizes, unsigned char* cur_DMBR, Leaf_node*& new_leaf_node, unsigned char* new_DMBR)
 {
+
+
+
+//Find the last line of record file, record is the line number
+fstream record_file, readid_file, typeid_file;
+const char* record_filename = (globalRecordFilename).c_str();
+const char* readid_filename = (globalRecordFilename+".readid").c_str();
+const char* typeid_filename = (globalRecordFilename+".typeid").c_str();
+
+record_file.open(record_filename,fstream::in | fstream::out);
+readid_file.open(readid_filename,fstream::in | fstream::out | fstream::app);
+typeid_file.open(typeid_filename,fstream::in | fstream::out | fstream::app);
+
+if(record_file.fail())
+{
+    cout<<"can't open file .record"<<endl;
+    exit(1);
+}
+if(readid_file.fail())
+{
+    cout<<"can't open file .readid"<<endl;
+    exit(1);
+}
+if(typeid_file.fail())
+{
+    cout<<"can't open file .typeid"<<endl;
+    exit(1);
+}
+
+static int record_count=-1;
+
+record_count++;
+record_file << record_count <<endl;
+
+unsigned char type_array[256]={'\0'};
+type_array[0] = 1;
+type_array[1] = typeid_global;
+//write (read id, type id) to record file
+typeid_file.write((const char*)type_array, sizeof(type_array));
+//typeid_file << "1 " << typeid_global << endl;
+
+new_data.record = record_count;
+record_file.close();
+readid_file.close();
+typeid_file.close();
+
+//array record_type[][] for test
+record_type[record_count][0]=1;
+record_type[record_count][1]=typeid_global;
+//
+	
     if(count < LEAF_NODE_SIZE)
     { // room avaialbe
         entries[count] = new_data;
@@ -326,18 +523,21 @@ void Leaf_node::read_node(fstream& ND_file, unsigned int block_number)
 {
     ND_file.seekg(block_number*DISK_BLOCK_SIZE);
 
+    ND_tree_record_count record_count_array[LEAF_NODE_SIZE];
     ND_tree_record record_array[LEAF_NODE_SIZE];
     unsigned char key_array[LEAF_NODE_SIZE][DIM];
     unsigned char cntkey_array[LEAF_NODE_SIZE][CNTDIM];
 
     ND_file.read((char*)(&count), sizeof(int));
 
+    ND_file.read((char*)record_count_array, sizeof(record_count_array));
     ND_file.read((char*)record_array, sizeof(record_array));
     ND_file.read((char*)key_array, sizeof(key_array));
     ND_file.read((char*)cntkey_array, sizeof(cntkey_array));
     for(int i = 0; i < count; i++)
     {
-        entries[i].record = record_array[i];
+        entries[i].record_count = record_count_array[i];
+	entries[i].record = record_array[i];
         for(int j =0; j < DIM; j++)
             entries[i].key[j] = key_array[i][j];
         for(int j =0; j < CNTDIM; j++)
@@ -351,19 +551,22 @@ void Leaf_node::write_node(fstream& ND_file, unsigned int block_number)
 {
     ND_file.seekp(block_number * DISK_BLOCK_SIZE);
     ND_file.write(reinterpret_cast<const char*>(&count), sizeof(int));
+    ND_tree_record_count record_count_array[LEAF_NODE_SIZE];
     ND_tree_record record_array[LEAF_NODE_SIZE];
     unsigned char key_array[LEAF_NODE_SIZE][DIM];
     float cntkey_array[LEAF_NODE_SIZE][CNTDIM];
 
     for(int i = 0; i < count; i++)
     {
-        record_array[i] = entries[i].record;
+        record_count_array[i] = entries[i].record_count;
+	record_array[i] = entries[i].record;
 	for(int j =0; j < DIM; j++)
             key_array[i][j] = entries[i].key[j];
         for(int j =0; j < CNTDIM; j++)
             cntkey_array[i][j] = entries[i].cntkey[j];
     }
 
+    ND_file.write((const char*)record_count_array, sizeof(record_count_array));
     ND_file.write((const char*)record_array, sizeof(record_array));
     ND_file.write((const char*)key_array, sizeof(key_array));
     ND_file.write((const char*)cntkey_array, sizeof(cntkey_array));
