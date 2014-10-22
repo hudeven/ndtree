@@ -582,7 +582,7 @@ clear_result();
     int total_results_size=0;
     int total_record_num = 0;
    
-    while(!query_file.eof()){
+    while(query_file.peek() != EOF){
         debug_boxQ_leaf_hit_peak=0;
         boxQueryData = makeRandomBoxQueryData(query_file);
         ndt.box_query(boxQueryData, query_results, query_results_size, number_of_io);
