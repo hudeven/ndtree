@@ -1,0 +1,40 @@
+reating a new index file
+Duplicate data points encountered:2
+DistinctDataPoints data points indexed:997
+Total data points read:9223372036854775807
+
+Dsc dim: 10
+Cnt dim: 0
+Dir node size: 292
+Leaf node size: 204
+
+Dir node minimum utilization: 0.3
+Leaf node minimum utilization: 0.3
+
+Number of disk blocks: 9
+Number of vectors indexed: 997
+Height: 2
+
+nodeSplitType 0
+DISK_BLOCK_SIZE 4096
+BestChild heuristics used for covered_area: 792
+BestChild heuristics used for notcovered_overlap_enlarge: 0
+BestChild heuristics used for notcovered_area_enlarge:    0
+BestChild heuristics used for notcovered_area:    0
+
+Number of dir nodes: 0 (root is excluded)
+Number of leaf nodes: 8
+
+Dir node utilization: -1
+Leaf node utilization: 0.610907
+Utilization: 0.610907
+
+Box query file ../data/query_random
+boxSize= RANDOM, AvG boxquery I/O: 17.26
+ AvG matched data point found=2.58
+ AvG leaf node accessed: 11.61
+total boxquery I/O=1726
+total matched data points=258
+total matched records = 258
+ AvG leaf node hit peak: 1.62
+[Inferior 1 (process 19676) exited normally]

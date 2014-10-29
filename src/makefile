@@ -1,11 +1,12 @@
-GCC=g++
-NDT: main.o utility.o logClass.o
-	g++ -g -o ndTree main.o utility.o logClass.o
+CC=g++
+CFLAGS=-g -c
+ndTree: main.o utility.o logClass.o
+	$(CC) -g -o ndTree main.o utility.o logClass.o
 main.o: main.cpp config.h Dir_entry.h Dir_node.h Leaf_entry.h Leaf_node.h logClass.h ND_tree.h Node.h utility.h
-	g++ -g -c main.cpp
+	$(CC) $(CFLAGS) main.cpp
 utility.o: utility.cpp utility.h
-	g++ -g -c utility.cpp
+	$(CC) $(CFLAGS) utility.cpp
 logClass.o: logClass.cpp logClass.h
-	g++ -g -c logClass.cpp
+	$(CC) $(CFLAGS) logClass.cpp
 clean:
 	rm -f *.o

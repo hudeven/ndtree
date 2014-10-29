@@ -1,7 +1,11 @@
+#include <getopt.h>
+
+
 #include "ND_tree.h"
 #include <vector>
 #include "logClass.h"
 #include <limits.h>
+
 ofstream OutStream;
 
 // GLOBAL VARIABLES - Added by Alok to make interface of this
@@ -1015,84 +1019,132 @@ void display_help()
     cout<<"\tANY EXISTING INDEX FILE WILL BE DELETED"<<endl;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#define OPT_TREEFILE "-idxfile"
+#define OPT_DSCDIM "-dscdim"
+#define OPT_LOADFILE "-load_file"
+#define OPT_AUXFILE "-aux_file"
+#define OPT_RECORDFILE "-record_file"
+#define OPT_BQFILE "-bqfile"
+#define OPT_RQFILE "-rqfile"
+#define OPT_RANGE "-range"
+#define OPT_SKIP "-skip"
+#define OPT_COUNT "-count"
+#define OPT_NEW "-newtree"
+#define OPT_HELP "-help"
+#define UNDEF_STR "__UNDEF__"
+#define UNDEF_LONG -999999
+
+
+struct option longopts[] = {
+    { "dimension", required_argument, NULL,'m'},
+    { "index", required_argument, NULL,'i'},
+    { "data", required_argument, NULL,'d'},
+    { "boxquery", required_argument, NULL,'b'},
+    { "rangequery", required_argument, NULL,'r'},
+    { "skip", required_argument, NULL,'s'},
+    { "aux", required_argument, NULL,'a'},
+    { "record", required_argument, NULL,'c'},
+    { "newtree", no_argument, NULL,'n'},
+    { "help", no_argument, NULL,'h'},
+   {     0,    0,    0,    0},
+};
+
+//enum Action = {};
+
 int main(int argc, char *argv[])
 {
-    if(nodeSplitType==ORIGINAL)
-    {
-        assert(dir_min_util>0.1);
-        TREE_TYPE = STATIC_TREE;
-    }
-    options opt;
-    //Initialize options to Undef values
-    // Name of the data file.
-    opt.datafile = "../data/data_random";
-    opt.auxfile = "../data/aux";
-    opt.recordfile = "../data/record";
-     //Name of the index file
-    opt.idxfile = "../data/index_random";
-    opt.bqfile = "../data/box_query_random";
-    opt.rqfile = UNDEF_STR;
-    opt.range = 0.;
-    opt.skip = 0;
-    opt.count = LONG_MAX;
-    opt.newtree = true;
-    opt.help = false;
-    get_options(argc, argv, &opt);
+	bool newTree = false;
+	int c;
+    	while((c = getopt_long(argc, argv, "m:i:d:b:r:s:a:c:nh", longopts, NULL)) != -1){
+		switch (c){
+		case 'm':
+		    printf("dimension is: %s\n", optarg);
+		    break;
+		case 'i':
+		    printf("index file name is: %s\n", optarg);
+		    globalIndexFilename = optarg;
+		    break;
+		case 'd':
+		    printf("data file name is %s.\n", optarg);
+		    globalDataFilename = optarg;
+		    break;
+		case 'b':
+		    printf("box query file name is %s.\n", optarg);
+		    globalBQFilename = optarg;
+		    break;
+		case 'r':
+		    printf("range query file name is %s.\n", optarg);
+		    globalRQFilename = optarg;
+		    break;
+		case 's':
+		    printf("skip is %s.\n", optarg);
+		    break;
+		case 'a':
+		    printf("aux file name is %s.\n", optarg);
+		    globalAuxFilename = optarg;
+		    break;
+		case 'c':
+		    printf("record file name is %s.\n", optarg);
+		    globalRecordFilename = optarg;
+		    break;
+		case 'n':
+		    printf("\ncreate new tree \n");
+		    newTree = true;
+		    break;
+		case 'h':
+		    printf("\nHelp information \n");
+		    break;
+		}
+	}
 
-    if(opt.auxfile.compare(UNDEF_STR))
-    {
-	cout<<"global aux file name is: "<<opt.auxfile<<endl;
-	globalAuxFilename = opt.auxfile;
-    }
-    if(opt.recordfile.compare(UNDEF_STR))
-   {
-	cout<<"global aux file name is: "<<opt.recordfile<<endl;
-	globalRecordFilename = opt.recordfile;
-    }
 
-    if(opt.idxfile.compare(UNDEF_STR))
-    {
-    //    logO.log2File(opt.idxfile.insert(0, "Index will be created in the file ").c_str());
-        cout<<"Index will be created in "<<opt.idxfile<<endl;
-        globalIndexFilename = opt.idxfile;
-    }
-    if(opt.datafile.compare(UNDEF_STR))
-    {
-        globalDataFilename = opt.datafile;
-	//globalAuxFilename = opt.auxfile;
       //  logO.log2File(opt.datafile.insert(0, "Source data file : ").c_str());
-        cout<<"Source data file :"<<opt.datafile<<endl;
-        cout<<"Source aux file :"<<opt.auxfile<<endl;
-        cout<<"Number of records to load "<<opt.count<<endl;
-        if(opt.newtree)
+        if(newTree)
         {
         //    log0.log2File("Creatung a new file");
             cout<<"Creating a new index file"<<endl;
             
 	    //original method, without link to data record
 	    //batchBuild_with_duplicate(opt.count);
-            batchBuild_with_duplicate_record(opt.count);
+            batchBuild_with_duplicate_record(LONG_MAX);
         }
         else
         {
         //    log0.log2File("Modifying existing file");
             cout<<"Modifying an existing file "<<endl;
-            batchGrow_with_duplicate(opt.skip, opt.count);
+	    //figure it out later
+	    int skip = 10;
+            batchGrow_with_duplicate(skip, LONG_MAX);
         }
-    }
-    if(opt.bqfile.compare(UNDEF_STR))
-    {
-        globalBQFilename = opt.bqfile;
         //logO.log2File(opt.datafile.insert(0, "Box query file : ").c_str());
-        cout<<"Box query file "<<opt.bqfile<<endl;
+        cout<<"Box query file "<<globalBQFilename<<endl;
         batchRandomBoxQuery();
-    }
     
-    if(opt.rqfile.compare(UNDEF_STR))
-    {
-        globalRQFilename = opt.rqfile;
+	/*********** Range query, check it later *******************************/
         //logO.log2File(opt.datafile.insert(0, "Range query file : ").c_str());
-        cout<<"Range query file "<<opt.rqfile<<endl;
-        batchRangeQuery();
-    }
+        //cout<<"Range query file "<<opt.rqfile<<endl;
+        //batchRangeQuery();
 }
